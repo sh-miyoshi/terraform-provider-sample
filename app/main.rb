@@ -4,8 +4,8 @@ require 'sinatra/reloader' if development?
 require 'securerandom'
 
 data = {
-  vm: [],
-  storage: []
+  "vm" => [],
+  "storage" => []
 }
 
 # Init data
@@ -24,7 +24,7 @@ get '/vm' do
   data["vm"].to_json
 end
 
-get '/vm/"id"' do
+get '/vm/:id' do
   data["vm"].each do |vm|
     if vm["id"] == params["id"]
       content_type :json
@@ -50,7 +50,7 @@ post '/vm', provides: :json do
   v.to_json
 end
 
-delete '/vm/"id"' do
+delete '/vm/:id' do
   data["vm"].delete_if{|vm| vm["id"] == params["id"]}
   save!(data)
 end
@@ -63,7 +63,7 @@ get '/storage' do
   data["storage"].to_json
 end
 
-get '/storage/"id"' do
+get '/storage/:id' do
   data["storage"].each do |storage|
     if storage["id"] == params["id"]
       content_type :json
@@ -89,7 +89,7 @@ post '/storage', provides: :json do
   v.to_json
 end
 
-delete '/storage/"id"' do
+delete '/storage/:id' do
   data["storage"].delete_if{|storage| storage["id"] == params["id"]}
   save!(data)
 end
