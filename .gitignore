@@ -5,6 +5,7 @@ app/data.json
 # terraform
 .terraform*
 *.tfstate
+*.backup
 
 # binaries
 *.exe
