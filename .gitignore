@@ -1,3 +1,11 @@
+# temp data
 tmp/
 app/data.json
+
+# terraform
+.terraform*
+*.tfstate
+
+# binaries
 *.exe
+terraform-provider-sample
