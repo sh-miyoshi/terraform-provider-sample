@@ -3,28 +3,17 @@ require "json"
 require 'sinatra/reloader' if development?
 require 'securerandom'
 
-data = {
-  "vm" => [],
-  "storage" => []
-}
-
-# Init data
-begin
-  File.open("data.json") do |fp|
-    data = JSON.load(fp)
-  end
-rescue
-end
-
 #----------------------------------------
 # For VM resource
 #----------------------------------------
 get '/vm' do
   content_type :json
+  data = load()
   data["vm"].to_json
 end
 
 get '/vm/:id' do
+  data = load()
   data["vm"].each do |vm|
     if vm["id"] == params[:id]
       content_type :json
@@ -44,6 +33,7 @@ post '/vm', provides: :json do
     spec: params["spec"]
   }
 
+  data = load()
   data["vm"].push(v)
   save!(data)
   content_type :json
@@ -51,6 +41,7 @@ post '/vm', provides: :json do
 end
 
 delete '/vm/:id' do
+  data = load()
   data["vm"].delete_if{|vm| vm["id"] == params[:id]}
   save!(data)
 
@@ -58,6 +49,7 @@ delete '/vm/:id' do
 end
 
 put '/vm/:id' do
+  data = load()
   data["vm"].map! do |vm|
     if vm["id"] == params[:id]
       params = JSON.parse request.body.read
@@ -77,10 +69,12 @@ end
 #----------------------------------------
 get '/storage' do
   content_type :json
+  data = load()
   data["storage"].to_json
 end
 
 get '/storage/:id' do
+  data = load()
   data["storage"].each do |storage|
     if storage["id"] == params[:id]
       content_type :json
@@ -100,6 +94,7 @@ post '/storage', provides: :json do
     spec: params["spec"]
   }
 
+  data = load()
   data["storage"].push(v)
   save!(data)
   content_type :json
@@ -107,6 +102,7 @@ post '/storage', provides: :json do
 end
 
 delete '/storage/:id' do
+  data = load()
   data["storage"].delete_if{|storage| storage["id"] == params[:id]}
   save!(data)
 
@@ -114,6 +110,7 @@ delete '/storage/:id' do
 end
 
 put '/storage/:id' do
+  data = load()
   data["storage"].map! do |storage|
     if storage["id"] == params[:id]
       params = JSON.parse request.body.read
@@ -126,6 +123,19 @@ put '/storage/:id' do
   end
   save!(data)
   201
+end
+
+def load()
+  begin
+    File.open("data.json") do |fp|
+      JSON.load(fp)
+    end
+  rescue
+    data = {
+      "vm" => [],
+      "storage" => []
+    }
+  end
 end
 
 def save!(data)
