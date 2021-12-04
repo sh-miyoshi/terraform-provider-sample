@@ -123,5 +123,17 @@ func resourceVMDelete(ctx context.Context, d *schema.ResourceData, m interface{}
 		Detail:   "Debug message: Call delete handler",
 	})
 
+	id := d.Id()
+	client := &http.Client{}
+	req, _ := http.NewRequest(http.MethodDelete, appURL+"/vm/"+id, nil)
+	if _, err := client.Do(req); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
+		return diags
+	}
+
+	// d.SetId("") is automatically called assuming delete returns no errors, but
+	// it is added here for explicitness.
+	d.SetId("")
+
 	return diags
 }

@@ -53,6 +53,8 @@ end
 delete '/vm/:id' do
   data["vm"].delete_if{|vm| vm["id"] == params[:id]}
   save!(data)
+
+  201
 end
 
 #----------------------------------------
@@ -92,6 +94,8 @@ end
 delete '/storage/:id' do
   data["storage"].delete_if{|storage| storage["id"] == params[:id]}
   save!(data)
+
+  201
 end
 
 def save!(data)
