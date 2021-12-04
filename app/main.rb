@@ -57,6 +57,21 @@ delete '/vm/:id' do
   201
 end
 
+put '/vm/:id' do
+  data["vm"].map! do |vm|
+    if vm["id"] == params[:id]
+      params = JSON.parse request.body.read
+      {
+        id:   vm["id"],
+        name: params["name"],
+        spec: params["spec"]
+      }
+    end
+  end
+  save!(data)
+  201
+end
+
 #----------------------------------------
 # For Storage resource
 #----------------------------------------
@@ -95,6 +110,21 @@ delete '/storage/:id' do
   data["storage"].delete_if{|storage| storage["id"] == params[:id]}
   save!(data)
 
+  201
+end
+
+put '/storage/:id' do
+  data["storage"].map! do |storage|
+    if storage["id"] == params[:id]
+      params = JSON.parse request.body.read
+      {
+        id:   storage["id"],
+        name: params["name"],
+        spec: params["spec"]
+      }
+    end
+  end
+  save!(data)
   201
 end
 
