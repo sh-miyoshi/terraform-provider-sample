@@ -112,6 +112,29 @@ func resourceVMUpdate(ctx context.Context, d *schema.ResourceData, m interface{}
 		Detail:   "Debug message: Call update handler",
 	})
 
+	if d.HasChange("name") || d.HasChange("cpu") || d.HasChange("memory") {
+		id := d.Id()
+
+		name := d.Get("name").(string)
+		cpu := d.Get("cpu").(int)
+		memory := d.Get("memory").(int)
+
+		body, _ := json.Marshal(vm{
+			Name: name,
+			Spec: vmSpec{
+				CPU:    cpu,
+				Memory: memory,
+			},
+		})
+
+		client := &http.Client{}
+		req, _ := http.NewRequest(http.MethodPut, appURL+"/vm/"+id, bytes.NewBuffer(body))
+		if _, err := client.Do(req); err != nil {
+			diags = append(diags, diag.FromErr(err)...)
+			return diags
+		}
+	}
+
 	return diags
 }
 
