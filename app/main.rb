@@ -26,7 +26,7 @@ end
 
 get '/vm/:id' do
   data["vm"].each do |vm|
-    if vm["id"] == params["id"]
+    if vm["id"] == params[:id]
       content_type :json
       return vm.to_json
     end
@@ -51,7 +51,7 @@ post '/vm', provides: :json do
 end
 
 delete '/vm/:id' do
-  data["vm"].delete_if{|vm| vm["id"] == params["id"]}
+  data["vm"].delete_if{|vm| vm["id"] == params[:id]}
   save!(data)
 end
 
@@ -65,7 +65,7 @@ end
 
 get '/storage/:id' do
   data["storage"].each do |storage|
-    if storage["id"] == params["id"]
+    if storage["id"] == params[:id]
       content_type :json
       return storage.to_json
     end
@@ -90,7 +90,7 @@ post '/storage', provides: :json do
 end
 
 delete '/storage/:id' do
-  data["storage"].delete_if{|storage| storage["id"] == params["id"]}
+  data["storage"].delete_if{|storage| storage["id"] == params[:id]}
   save!(data)
 end
 
