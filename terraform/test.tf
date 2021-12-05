@@ -6,6 +6,8 @@ terraform {
   }
 }
 
+provider "sample" {}
+
 resource "sample_storage" "storage1" {
   name = "storage1"
   size = 50
