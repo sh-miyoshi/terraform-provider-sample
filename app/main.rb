@@ -58,6 +58,8 @@ put '/vm/:id' do
         name: params["name"],
         spec: params["spec"]
       }
+    else
+      vm
     end
   end
   save!(data)
@@ -119,6 +121,8 @@ put '/storage/:id' do
         name: params["name"],
         spec: params["spec"]
       }
+    else
+      storage
     end
   end
   save!(data)
