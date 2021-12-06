@@ -11,6 +11,9 @@ const (
 // Provider
 func Provider() *schema.Provider {
 	return &schema.Provider{
+		DataSourcesMap: map[string]*schema.Resource{
+			"sample_storage": dataSourceStorage(),
+		},
 		ResourcesMap: map[string]*schema.Resource{
 			"sample_vm":      resourceVM(),
 			"sample_storage": resourceStorage(),
