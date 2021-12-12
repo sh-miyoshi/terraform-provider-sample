@@ -1,12 +1,15 @@
 terraform {
   required_providers {
     sample = {
+      versions = ["0.0.1"]
       source = "github.com/sh-miyoshi/sample"
     }
   }
 }
 
-provider "sample" {}
+provider "sample" {
+  app_url = "http://localhost:4567"
+}
 
 resource "sample_storage" "storage1" {
   name = "storage1"
