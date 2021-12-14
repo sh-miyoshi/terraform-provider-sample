@@ -50,18 +50,26 @@ end
 
 put '/vm/:id' do
   data = load()
+  body = JSON.parse request.body.read
+  updated = false
   data["vm"].map! do |vm|
     if vm["id"] == params[:id]
-      params = JSON.parse request.body.read
+      updated = true
       {
         id:   vm["id"],
-        name: params["name"],
-        spec: params["spec"]
+        name: body["name"],
+        spec: body["spec"]
       }
     else
       vm
     end
   end
+  data["vm"].push({
+    id:   params[:id],
+    name: body["name"],
+    spec: body["spec"]
+  }) if !updated
+
   save!(data)
   201
 end
@@ -113,18 +121,26 @@ end
 
 put '/storage/:id' do
   data = load()
+  body = JSON.parse request.body.read
+  updated = false
   data["storage"].map! do |storage|
     if storage["id"] == params[:id]
-      params = JSON.parse request.body.read
+      updated = true
       {
         id:   storage["id"],
-        name: params["name"],
-        spec: params["spec"]
+        name: body["name"],
+        spec: body["spec"]
       }
     else
       storage
     end
   end
+  data["storage"].push({
+    id:   params[:id],
+    name: body["name"],
+    spec: body["spec"]
+  }) if !updated
+
   save!(data)
   201
 end
@@ -132,6 +148,7 @@ end
 def load()
   begin
     File.open("data.json") do |fp|
+      fp.flock(File::LOCK_SH)
       JSON.load(fp)
     end
   rescue
@@ -144,6 +161,7 @@ end
 
 def save!(data)
   File.open("data.json","w") do |fp|
+    fp.flock(File::LOCK_EX)
     fp.write(data.to_json)
   end
 end
