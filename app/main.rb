@@ -162,6 +162,6 @@ end
 def save!(data)
   File.open("data.json","w") do |fp|
     fp.flock(File::LOCK_EX)
-    fp.write(data.to_json)
+    fp.write(JSON.pretty_generate(data))
   end
 end
