@@ -11,8 +11,9 @@ import (
 )
 
 type vmSpec struct {
-	CPU    int `json:"cpu"`
-	Memory int `json:"memory"`
+	CPU             int    `json:"cpu"`
+	Memory          int    `json:"memory"`
+	ExternalStorage string `json:"external_storage"`
 }
 
 type vm struct {
@@ -40,6 +41,10 @@ func resourceVM() *schema.Resource {
 				Type:     schema.TypeInt,
 				Required: true,
 			},
+			"external_storage_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -55,12 +60,14 @@ func resourceVMCreate(ctx context.Context, d *schema.ResourceData, m interface{}
 	name := d.Get("name").(string)
 	cpu := d.Get("cpu").(int)
 	memory := d.Get("memory").(int)
+	storage_id := d.Get("external_storage_id").(string)
 
 	body, _ := json.Marshal(vm{
 		Name: name,
 		Spec: vmSpec{
-			CPU:    cpu,
-			Memory: memory,
+			CPU:             cpu,
+			Memory:          memory,
+			ExternalStorage: storage_id,
 		},
 	})
 	httpRes, err := http.Post(appURL+"/vm", "application/json", bytes.NewBuffer(body))
@@ -100,6 +107,7 @@ func resourceVMRead(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	d.Set("name", res.Name)
 	d.Set("cpu", res.Spec.CPU)
 	d.Set("memory", res.Spec.Memory)
+	d.Set("external_storage_id", res.Spec.ExternalStorage)
 
 	return diags
 }
@@ -112,18 +120,20 @@ func resourceVMUpdate(ctx context.Context, d *schema.ResourceData, m interface{}
 		Detail:   "Debug message: Call update handler",
 	})
 
-	if d.HasChange("name") || d.HasChange("cpu") || d.HasChange("memory") {
+	if d.HasChange("name") || d.HasChange("cpu") || d.HasChange("memory") || d.HasChange("external_storage_id") {
 		id := d.Id()
 
 		name := d.Get("name").(string)
 		cpu := d.Get("cpu").(int)
 		memory := d.Get("memory").(int)
+		storage_id := d.Get("external_storage_id").(string)
 
 		body, _ := json.Marshal(vm{
 			Name: name,
 			Spec: vmSpec{
-				CPU:    cpu,
-				Memory: memory,
+				CPU:             cpu,
+				Memory:          memory,
+				ExternalStorage: storage_id,
 			},
 		})
 
