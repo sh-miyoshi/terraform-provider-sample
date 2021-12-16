@@ -8,11 +8,6 @@ terraform {
 }
 
 provider "sample" {
-  app_url = "http://localhost:4567"
-}
-
-data "sample_storage" "storage2" {
-  name = "storage2"
 }
 
 resource "sample_storage" "storage1" {
